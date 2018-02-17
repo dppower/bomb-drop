@@ -66,15 +66,22 @@ export const SHADER_PROVIDERS: StaticProvider[] = [
     {
         provide: BOMB_FRAGMENT_SHADER, useValue: {
             attributes: [],
-            uniforms: ["u_base_color", "u_angle"],
+            uniforms: ["u_base_color", "u_arc_length"],
             source: `
             #version 100
             precision mediump float;
+            const float PI = 3.14159265358979323846;
             uniform vec4 u_base_color;
-            uniform float u_angle;
+            uniform float u_arc_length;
             varying vec2 v_radius;
             void main(void) {
-            gl_FragColor = u_base_color;
+            vec2 normal = normalize(v_radius);
+            float a = acos(normal.y);
+            if (normal.x < 0.0) {
+                a = 2.0 * PI - a;
+            }
+            float factor = a < u_arc_length ? 0.6 : 1.0;
+            gl_FragColor = vec4(factor * u_base_color.xyz, 1.0);
             }`
         }
     },

@@ -38,6 +38,6 @@ export class BombSpawner {
             this.shader_.getUniform("u_projection_matrix"), false, camera.projection
         );
 
-        this.active_bombs_.forEach(bomb => bomb.draw(this.shader_));
+        this.active_bombs_.forEach(bomb => bomb.draw(context, this.shader_));
     };
 }
