@@ -1,7 +1,7 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable, Inject, Injector } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { BOXES } from "../geometry/mesh-providers";
+import { BOXES, BOMB } from "../geometry/mesh-providers";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -25,7 +25,8 @@ export class SceneRenderer {
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(BOXES) private boxes_: Mesh[],
         private render_loop_: RenderLoop,
-        private main_camera_: Camera2d
+        private main_camera_: Camera2d,
+        private parent_injector_: Injector
     ) {
         this.rgb_colors = this.hex_colors.map(hex => this.hexToRGBA(hex));
         this.setPermutations();
@@ -49,8 +50,14 @@ export class SceneRenderer {
         permute([0, 1, 2]);
     };
 
+    bomb_mesh: Mesh;
+
     initScene() {
         this.shader_.initProgram();
+
+        this.bomb_mesh = this.parent_injector_.get(BOMB);
+        this.bomb_mesh.setUniformColor(this.rgb_colors[0], 0);
+        this.bomb_mesh.initTransform(20, 50, 1, 2.5, 2.5, 0);
 
         let color_indices = this.permutations[this.current_permutation];
         this.boxes_.forEach((box, index) => {
@@ -117,5 +124,6 @@ export class SceneRenderer {
         );
 
         this.boxes_.forEach(box => box.drawMesh(this.shader_));
+        this.bomb_mesh.drawMesh(this.shader_);
     };
 }

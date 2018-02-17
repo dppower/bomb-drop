@@ -49,6 +49,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="canvas\touch-utility.ts" />
+    <TypeScriptCompile Include="geometry\circle-mesh.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\mesh-providers.ts" />
     <TypeScriptCompile Include="geometry\mesh-data.ts" />
     <TypeScriptCompile Include="geometry\primitive.ts" />
