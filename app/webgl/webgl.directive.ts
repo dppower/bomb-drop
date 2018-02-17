@@ -68,7 +68,7 @@ export class WebglDirective {
                 {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
-                    deps: [WEBGL, BASIC_SHADER, BOXES, Camera2d]
+                    deps: [WEBGL, BASIC_SHADER, BOXES, RenderLoop, Camera2d]
                 },
                 ...SHADER_PROVIDERS,
                 ...MESH_PROVIDERS

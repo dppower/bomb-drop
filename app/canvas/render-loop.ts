@@ -27,6 +27,7 @@ export class RenderLoop {
     readonly render_events = new Subject<number>();
     readonly update_events = new Subject<number>();
 
+    readonly swap_interval = new Subject<number>(); 
     readonly total_time_updates = new Subject<number>();   
     readonly rAF_begin = new Subject<number>();
 

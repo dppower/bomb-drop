@@ -7,7 +7,12 @@ import { Camera2d } from "../canvas/camera-2d";
 
 @Injectable()
 export class Mesh {
-    
+
+    get color_id() {
+        return this.color_id_;
+    };
+
+    private color_id_: number;
     private uniform_colour_ = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
     private transform_matrix_: Float32Array;
@@ -33,7 +38,8 @@ export class Mesh {
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
     
-    setUniformColor(array: number[]) {
+    setUniformColor(array: number[], id: number) {
+        this.color_id_ = id;
         this.uniform_colour_.set(array);
     };
 

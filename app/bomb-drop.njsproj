@@ -45,6 +45,9 @@
     <TypeScriptCompile Include="canvas\input-manager.ts" />
     <TypeScriptCompile Include="canvas\main-canvas.component.ts" />
     <TypeScriptCompile Include="canvas\render-loop.ts" />
+    <TypeScriptCompile Include="canvas\swap-timer.component.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="canvas\touch-utility.ts" />
     <TypeScriptCompile Include="geometry\mesh-providers.ts" />
     <TypeScriptCompile Include="geometry\mesh-data.ts" />

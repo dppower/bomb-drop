@@ -6,6 +6,7 @@ import { WebglDirective } from "../webgl/webgl.directive";
     selector: 'main-canvas',
     template: `
     <canvas webgl canvas-controller></canvas>
+    <swap-timer></swap-timer>
     `,
     styles: [`
     canvas {

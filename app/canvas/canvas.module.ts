@@ -5,6 +5,7 @@ import { CommonModule } from "@angular/common";
 import { WebglModule } from "../webgl/webgl.module";
 // Components
 import { MainCanvas } from "./main-canvas.component";
+import { SwapTimer } from "./swap-timer.component";
 // Directives
 import { CanvasController } from "./canvas-controller.directive";
 // Providers
@@ -27,7 +28,7 @@ const Camera: StaticProvider = {
 
 @NgModule({
     imports: [ CommonModule, WebglModule ],
-    declarations: [ MainCanvas, CanvasController ],
+    declarations: [ MainCanvas, CanvasController, SwapTimer ],
     providers: [ InputManager, RenderLoop, WORLD_CONSTANTS, Camera ],
     exports: [ MainCanvas ]
 })
