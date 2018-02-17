@@ -2,12 +2,13 @@
 
 import { Subscription } from "rxjs/Subscription";
 import { SceneRenderer } from "../renderers/scene-renderer";
+import { BombSpawner } from "../game/bomb-spawner";
 import { Camera2d } from "../canvas/camera-2d";
 import { InputManager } from "../canvas/input-manager";
 import { RenderLoop } from "../canvas/render-loop";
 import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
-import { SHADER_PROVIDERS, BASIC_SHADER } from "../shaders/shader-providers";
-import { MESH_PROVIDERS, BOXES } from "../geometry/mesh-providers";
+import { SHADER_PROVIDERS, BASIC_SHADER, BOMB_SHADER } from "../shaders/shader-providers";
+import { MESH_PROVIDERS, BOXES, BOMB, RGB_COLORS } from "../geometry/mesh-providers";
 
 @Directive({
     selector: "[webgl]"
@@ -68,7 +69,12 @@ export class WebglDirective {
                 {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
-                    deps: [WEBGL, BASIC_SHADER, BOXES, RenderLoop, Camera2d, Injector]
+                    deps: [WEBGL, BASIC_SHADER, BOXES, RGB_COLORS, RenderLoop, Camera2d, BombSpawner]
+                },
+                {
+                    provide: BombSpawner,
+                    useClass: BombSpawner,
+                    deps: [BOMB_SHADER, BOMB, RGB_COLORS]
                 },
                 ...SHADER_PROVIDERS,
                 ...MESH_PROVIDERS

@@ -20,7 +20,7 @@ export class SwapTimer implements OnInit, OnDestroy {
     ngOnInit() {
         this.time_updates_sub = this.render_loop_.swap_interval
             .pipe(
-                map((time) => Math.floor(time)),
+                map((time) => Math.floor(time) + 1),
                 distinctUntilChanged()
             )
             .subscribe((time) => this.time_next_swap = time);

@@ -3,24 +3,9 @@ import { Vec2, Vec2_T } from "../maths/vec2";
 import { InputManager } from "./input-manager";
 import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 
-//interface ViewDimensions {
-//    xmag: number;
-//    ymag: number;
-//    zfar: number;
-//    znear: number;
-//}
-
 @Injectable()
 export class Camera2d {
-
-    //set x(value: number) {
-    //    this.position_.x = value;
-    //};
-
-    //set y(value: number) {
-    //    this.position_.y = value;
-    //};
-
+    
     get projection() {
         return this.projection_matrix;
     };
@@ -28,8 +13,6 @@ export class Camera2d {
     private xmag_: number;
     private ymag_: number;
     private world_aspect_: number;
-    //private zfar_: number;
-    //private znear_: number;
 
     private position_: Vec2;
 
@@ -40,16 +23,11 @@ export class Camera2d {
         @Inject(WORLD_HEIGHT) private world_height_: number,
         private znear_: number, private zfar_: number
     ) {
-        //this.xmag_ = view_dimensions.xmag;
-        //this.ymag_ = view_dimensions.ymag;
-        //this.znear_ = view_dimensions.znear;
-        //this.zfar_ = view_dimensions.zfar;
         this.world_aspect_ = this.world_width_ / this.world_height_;
         
         this.position_ = new Vec2({ x: this.world_width_ / 2, y: this.world_height_ / 2 });
 
         this.projection_matrix = new Float32Array(16);
-        //this.setProjectionMatrix();
     };
     
     updateViewDimensions() {

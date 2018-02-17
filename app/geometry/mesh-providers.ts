@@ -18,7 +18,29 @@ export const BOMB = new InjectionToken<Mesh>("bomb mesh");
 const CIRCLE_BUFFER = new InjectionToken<Primitive[]>("circle primitive");
 const CIRCLE_MESH = new InjectionToken<MeshData>("cirle mesh data");
 
+// Colors
+export const HEX_COLORS = new InjectionToken<string[]>("hex colors");
+export const RGB_COLORS = new InjectionToken<number[][]>("rgb colors");
+
+function hexToRGBA(hex: string) {
+    const valid_hex = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
+    let matchs = hex.match(valid_hex);
+
+    if (matchs) {
+        let r = parseInt(matchs[1], 16) / 255;
+        let g = parseInt(matchs[2], 16) / 255;
+        let b = parseInt(matchs[3], 16) / 255;
+        let a = (matchs[4]) ? parseInt(matchs[4], 16) / 255 : 1;
+        return [r, g, b, a];
+    }
+    else {
+        return [1, 1, 1, 1];
+    }
+}
+
 export const MESH_PROVIDERS: StaticProvider[] = [
+    { provide: HEX_COLORS, useValue: ["#5768de", "#87b93f", "#d9563d"] },
+    { provide: RGB_COLORS, useFactory: (array: string[]) => { return array.map(hex => hexToRGBA(hex)); }, deps: [HEX_COLORS] },
     { provide: SQUARE_MESH, useValue: square_mesh_data },
     {
         provide: SQUARE_BUFFER,

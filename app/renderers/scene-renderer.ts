@@ -1,18 +1,16 @@
-import { Injectable, Inject, Injector } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { BOXES, BOMB } from "../geometry/mesh-providers";
+import { BOXES, BOMB, RGB_COLORS } from "../geometry/mesh-providers";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
 import { Camera2d } from "../canvas/camera-2d";
 import { RenderLoop } from "../canvas/render-loop";
+import { BombSpawner } from "../game/bomb-spawner";
 
 @Injectable()
 export class SceneRenderer {
-
-    readonly hex_colors = ["#5768de", "#87b93f", "#d9563d"];
-    readonly rgb_colors: number[][];
 
     private permutations: number[][];
     private current_permutation = 0;
@@ -24,11 +22,11 @@ export class SceneRenderer {
         @Inject(WEBGL) private gl: WebGLRenderingContext,
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(BOXES) private boxes_: Mesh[],
+        @Inject(RGB_COLORS) private rgb_colors: number[][],
         private render_loop_: RenderLoop,
         private main_camera_: Camera2d,
-        private parent_injector_: Injector
+        private bomb_spawner_: BombSpawner
     ) {
-        this.rgb_colors = this.hex_colors.map(hex => this.hexToRGBA(hex));
         this.setPermutations();
     };
 
@@ -50,14 +48,10 @@ export class SceneRenderer {
         permute([0, 1, 2]);
     };
 
-    bomb_mesh: Mesh;
-
     initScene() {
         this.shader_.initProgram();
-
-        this.bomb_mesh = this.parent_injector_.get(BOMB);
-        this.bomb_mesh.setUniformColor(this.rgb_colors[0], 0);
-        this.bomb_mesh.initTransform(20, 50, 1, 2.5, 2.5, 0);
+        this.bomb_spawner_.initSpawner();
+        this.bomb_spawner_.createBomb();
 
         let color_indices = this.permutations[this.current_permutation];
         this.boxes_.forEach((box, index) => {
@@ -70,21 +64,7 @@ export class SceneRenderer {
         this.boxes_[2].initTransform(32, 4, 1, 4, 4, 0);
     };
 
-    hexToRGBA(hex: string) {
-        const valid_hex = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
-        let matchs = hex.match(valid_hex);
-
-        if (matchs) {
-            let r = parseInt(matchs[1], 16) / 255;
-            let g = parseInt(matchs[2], 16) / 255;
-            let b = parseInt(matchs[3], 16) / 255;
-            let a = (matchs[4]) ? parseInt(matchs[4], 16) / 255 : 1;
-            return [r, g, b, a];
-        }
-        else {
-            return [1, 1, 1, 1];
-        }
-    };
+    
 
     updateScene(dt: number) {
         this.time_to_next_swap -= dt;
@@ -94,6 +74,8 @@ export class SceneRenderer {
         this.time_to_next_swap = ((this.time_to_next_swap % this.swap_interval_) + this.swap_interval_) % this.swap_interval_;
 
         this.render_loop_.swap_interval.next(this.time_to_next_swap);
+
+        this.bomb_spawner_.updateBombs(dt);
         this.main_camera_.updateViewDimensions();
     };
 
@@ -117,13 +99,12 @@ export class SceneRenderer {
     };
 
     drawScene() {
-        this.shader_.useProgram();
-        
+        this.shader_.useProgram();        
         this.gl.uniformMatrix4fv(
             this.shader_.getUniform("u_projection_matrix"), false, this.main_camera_.projection
         );
-
         this.boxes_.forEach(box => box.drawMesh(this.shader_));
-        this.bomb_mesh.drawMesh(this.shader_);
+
+        this.bomb_spawner_.drawBombs(this.gl, this.main_camera_);
     };
 }

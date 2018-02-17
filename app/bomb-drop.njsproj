@@ -49,6 +49,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="canvas\touch-utility.ts" />
+    <TypeScriptCompile Include="game\bomb-spawner.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="game\bomb.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\circle-mesh.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -83,6 +89,7 @@
     <Folder Include="canvas\" />
     <Folder Include="maths\" />
     <Folder Include="geometry\" />
+    <Folder Include="game\" />
     <Folder Include="physics\" />
     <Folder Include="renderers\" />
     <Folder Include="shaders\" />
