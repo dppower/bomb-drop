@@ -42,7 +42,7 @@ export class Bomb {
         this.time_remaining_ -= dt;
         if (this.time_remaining_ < 0) {
             this.is_destroyed_ = true;
-            return;
+            return true;
         }
         
         if (is_selected) {
@@ -70,7 +70,9 @@ export class Bomb {
 
         if (this.center_.y < this.radius_) {
             this.is_destroyed_ = true;
+            return true;
         }
+        return false;
     };
 
     isPointInBomb(point: Vec2_T) {

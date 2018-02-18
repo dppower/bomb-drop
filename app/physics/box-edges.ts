@@ -68,7 +68,7 @@ export class BoxEdges {
     collideWithWorldEdges(center: Vec2_T, radius: number) {
         return this.world_edges_
             .map(collider => {
-                return collider.collideWithCircle(center, radius);
+                return collider.collideWithCircle(center, radius, true);
             })
             .filter(contact => contact.depth < 0)
             .map(contact => Vec2.scale(contact.normal, -contact.depth))

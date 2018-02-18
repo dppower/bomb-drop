@@ -92,6 +92,7 @@ export class BombSpawner {
     };
 
     updateBombs(dt: number) {
+
         if (this.input_manager_.isButtonPressed("left")) {
             this.active_bombs_.forEach((bomb, index) => {
                 let is_selected = bomb.isPointInBomb(this.input_manager_.position);
@@ -100,13 +101,17 @@ export class BombSpawner {
                 }
             })
         }
+
         if (this.input_manager_.wasButtonReleased("left")) {
             this.selected_bomb_ = null;
         }
 
         this.active_bombs_.forEach((bomb, index) => {
             let is_selected = this.selected_bomb_ === index;
-            bomb.update(dt, this.input_manager_, is_selected);
+            let was_destroyed = bomb.update(dt, this.input_manager_, is_selected);
+            if (is_selected && was_destroyed) {
+                this.selected_bomb_ = null;
+            }
         });
     };
 
