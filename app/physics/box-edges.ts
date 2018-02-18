@@ -3,12 +3,14 @@
 import { Vec2, Vec2_T } from "../maths/vec2";
 import { BOX_DIMENSIONS, BoxDimensions, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { EdgeCollider } from "./edge-collider";
+import { CircleCollider } from "./circle-collider";
+import { AABB } from "./aabb";
 
 @Injectable()
 export class BoxEdges {
 
     private edge_colliders_: EdgeCollider[] = [];
-
+    private box_aabb_: AABB[] = [];
     private world_edges_: EdgeCollider[] = [];
     
     constructor( @Inject(BOX_DIMENSIONS) private box_dimensions_: BoxDimensions[],
@@ -63,6 +65,22 @@ export class BoxEdges {
                 { x: 0, y: 0 }
             )
         );
+
+        this.box_aabb_ = this.box_dimensions_.map(dims => {
+            let half = dims.length / 2;
+            return new AABB(dims.x - half, dims.y - half, dims.x + half, dims.y + half);
+        });
+    };
+
+    checkIsInBox(circle: CircleCollider) {
+        let box_index: number;
+        this.box_aabb_.forEach((box, index) => {
+            let check = AABB.isCircleInAABB(box, circle);
+            if (check) {
+                box_index = index;
+            }
+        });
+        return box_index;
     };
 
     collideWithWorldEdges(center: Vec2_T, radius: number) {

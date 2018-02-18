@@ -7,8 +7,20 @@ import { CircleCollider } from "../physics/circle-collider";
 
 export class Bomb {
 
+    get collider() {
+        return this.collider_;
+    };
+
+    get color_id() {
+        return this.color_id_;
+    };
+
     get is_destroyed() {
         return this.is_destroyed_;
+    };
+
+    setDestroyed() {
+        this.is_destroyed_ = true;
     };
 
     set awake(value: boolean) {

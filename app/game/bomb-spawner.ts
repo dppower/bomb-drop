@@ -88,10 +88,9 @@ export class BombSpawner {
                 }
             }
         }
-        this.updateBombs(dt);
     };
 
-    updateBombs(dt: number) {
+    updateBombs(dt: number, current_permutation: number[]) {
 
         if (this.input_manager_.isButtonPressed("left")) {
             this.active_bombs_.forEach((bomb, index) => {
@@ -111,6 +110,20 @@ export class BombSpawner {
             let was_destroyed = bomb.update(dt, this.input_manager_, is_selected);
             if (is_selected && was_destroyed) {
                 this.selected_bomb_ = null;
+            }
+        });
+
+        this.active_bombs_.forEach((bomb) => {
+            if (bomb.is_destroyed) return;
+            let box_index = this.box_edges_.checkIsInBox(bomb.collider);
+            if (box_index !== undefined) {
+                bomb.setDestroyed();
+                if (bomb.color_id === current_permutation[box_index]) {
+                    console.log("the color of bomb and box match");
+                }
+                else {
+                    console.log("the color of bomb and box DO NOT match");
+                }
             }
         });
     };

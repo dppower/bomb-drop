@@ -67,6 +67,7 @@
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
     <TypeScriptCompile Include="maths\vec2.ts" />
+    <TypeScriptCompile Include="physics\aabb.ts" />
     <TypeScriptCompile Include="physics\box-edges.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
