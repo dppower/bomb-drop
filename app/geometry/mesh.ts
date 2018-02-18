@@ -12,6 +12,14 @@ export class Mesh {
         return this.color_id_;
     };
 
+    get x() {
+        return this.transform_matrix_[12];
+    };
+
+    get y() {
+        return this.transform_matrix_[13];
+    };
+
     set x(value: number) {
         this.transform_matrix_[12] = value;
     };

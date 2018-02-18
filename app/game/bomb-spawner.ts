@@ -22,10 +22,10 @@ export class BombSpawner {
     private bomb_position_y = 50;
 
     // Spawn timer
-    private time_to_next_spawn_ = 2;
+    private time_to_next_spawn_ = 1;
     private current_spawn_interval_ = 5;
     private total_time_ = 0;
-    private total_bombs_to_spawn_ = 1;
+    private total_bombs_to_spawn_ = 120;
 
     // Bomb expiry
     private expiry_range_ = 6;
