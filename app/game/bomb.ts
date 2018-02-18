@@ -2,6 +2,7 @@
 import { ShaderProgram } from "../shaders/shader-program";
 import { InputManager } from "../canvas/input-manager";
 import { Vec2, Vec2_T } from "../maths/vec2";
+import { BoxEdges } from "../physics/box-edges";
 
 export class Bomb {
 
@@ -21,7 +22,8 @@ export class Bomb {
     private radius_ = 3;
 
     constructor(private bomb_mesh_: Mesh, private color_array_: number[],
-        private color_id_: number, private expiry_time_: number, center: Vec2_T
+        private color_id_: number, private expiry_time_: number, center: Vec2_T,
+        private box_edges_: BoxEdges
     ) {
         this.center_ = new Vec2(center);
         this.time_remaining_ = this.expiry_time_;
@@ -36,13 +38,22 @@ export class Bomb {
             return;
         }
         
-        if (!this.was_released_ && inputs.isButtonDown("right")) {
+        if (inputs.isButtonDown("right")) {
             if (this.isPointInCircle(inputs.position)) {
                 this.is_controlled_ = true;
                 this.center_.copy(inputs.position);
                 this.bomb_mesh_.x = this.center_.x;
                 this.bomb_mesh_.y = this.center_.y;
             }
+        }
+
+        let displace = this.box_edges_.collideWithEdges(this.center_, this.radius_);
+
+        if (!Vec2.isZero(displace)) {
+            this.center_.copy(Vec2.add(this.center_, displace));
+            this.bomb_mesh_.x = this.center_.x;
+            this.bomb_mesh_.y = this.center_.y;
+            this.was_released_ = true;
         }
 
         if (this.is_controlled_ && inputs.wasButtonReleased("right")) {

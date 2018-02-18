@@ -7,6 +7,7 @@ import { ShaderProgram} from "../shaders/shader-program";
 import { Bomb } from "./bomb";
 import { Camera2d } from "../canvas/camera-2d";
 import { InputManager } from "../canvas/input-manager";
+import { BoxEdges } from "../physics/box-edges";
 
 @Injectable()
 export class BombSpawner {
@@ -35,7 +36,8 @@ export class BombSpawner {
         @Inject(BOMB_SHADER) private shader_: ShaderProgram,
         @Inject(BOMBS) private bomb_meshes_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
-        private input_manager_: InputManager
+        private input_manager_: InputManager,
+        private box_edges_: BoxEdges
     ) { };
 
     initSpawner() {
@@ -47,7 +49,7 @@ export class BombSpawner {
         let color_index = Math.floor(Math.random() * this.rgb_colors.length);
         let bomb = new Bomb(
             this.bomb_meshes_[index], this.rgb_colors[color_index], color_index,
-            expiry_time, { x: this.bomb_position_x[index], y: this.bomb_position_y }
+            expiry_time, { x: this.bomb_position_x[index], y: this.bomb_position_y }, this.box_edges_
         );
         this.active_bombs_[index] = bomb;
     };

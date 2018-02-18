@@ -6,7 +6,9 @@ import { BombSpawner } from "../game/bomb-spawner";
 import { Camera2d } from "../canvas/camera-2d";
 import { InputManager } from "../canvas/input-manager";
 import { RenderLoop } from "../canvas/render-loop";
+import { BoxEdges } from "../physics/box-edges";
 import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
+import { BOX_DIMENSIONS } from "../physics/constants";
 import { SHADER_PROVIDERS, BASIC_SHADER, BOMB_SHADER } from "../shaders/shader-providers";
 import { MESH_PROVIDERS, BOXES, BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
 
@@ -69,13 +71,14 @@ export class WebglDirective {
                 {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
-                    deps: [WEBGL, BASIC_SHADER, BOXES, RGB_COLORS, RenderLoop, Camera2d, BombSpawner]
+                    deps: [WEBGL, BASIC_SHADER, BOXES, RGB_COLORS, BOX_DIMENSIONS, RenderLoop, Camera2d, BombSpawner]
                 },
                 {
                     provide: BombSpawner,
                     useClass: BombSpawner,
-                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager]
+                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager, BoxEdges]
                 },
+                { provide: BoxEdges, useClass: BoxEdges, deps: [BOX_DIMENSIONS] },
                 ...SHADER_PROVIDERS,
                 ...MESH_PROVIDERS
             ];

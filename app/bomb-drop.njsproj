@@ -67,9 +67,13 @@
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
     <TypeScriptCompile Include="maths\vec2.ts" />
+    <TypeScriptCompile Include="physics\box-edges.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="physics\constants.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="physics\edge-collider.ts" />
     <TypeScriptCompile Include="renderers\scene-renderer.ts" />
     <TypeScriptCompile Include="shaders\active-program-attributes.ts" />
     <TypeScriptCompile Include="shaders\shader-program.ts" />

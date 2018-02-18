@@ -2,6 +2,7 @@ import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
 import { BOXES, RGB_COLORS } from "../geometry/mesh-providers";
+import { BOX_DIMENSIONS, BoxDimensions } from "../physics/constants";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -23,6 +24,7 @@ export class SceneRenderer {
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(BOXES) private boxes_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
+        @Inject(BOX_DIMENSIONS) private box_dimensions_: BoxDimensions[],
         private render_loop_: RenderLoop,
         private main_camera_: Camera2d,
         private bomb_spawner_: BombSpawner
@@ -56,11 +58,11 @@ export class SceneRenderer {
         this.boxes_.forEach((box, index) => {
             let color_index = color_indices[index];
             box.setUniformColor(this.rgb_colors[color_index], color_index);
-        });
 
-        this.boxes_[0].initTransform(8, 4, 1, 4, 4, 0);
-        this.boxes_[1].initTransform(20, 4, 1, 4, 4, 0);
-        this.boxes_[2].initTransform(32, 4, 1, 4, 4, 0);
+            let dims = this.box_dimensions_[index];
+            let half = dims.length / 2;
+            box.initTransform(dims.x, dims.y, 1, half, half, 0);
+        });
     };
 
     
