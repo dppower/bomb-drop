@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { BOXES, BOMB, RGB_COLORS } from "../geometry/mesh-providers";
+import { BOXES, RGB_COLORS } from "../geometry/mesh-providers";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -51,7 +51,6 @@ export class SceneRenderer {
     initScene() {
         this.shader_.initProgram();
         this.bomb_spawner_.initSpawner();
-        this.bomb_spawner_.createBomb();
 
         let color_indices = this.permutations[this.current_permutation];
         this.boxes_.forEach((box, index) => {
@@ -75,6 +74,7 @@ export class SceneRenderer {
 
         this.render_loop_.swap_interval.next(this.time_to_next_swap);
 
+        this.bomb_spawner_.updateSpawner(dt);
         this.bomb_spawner_.updateBombs(dt);
         this.main_camera_.updateViewDimensions();
     };
