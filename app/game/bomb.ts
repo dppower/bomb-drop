@@ -47,10 +47,13 @@ export class Bomb {
             }
         }
 
-        let displace = this.box_edges_.collideWithEdges(this.center_, this.radius_);
+        let world_displace = this.box_edges_.collideWithWorldEdges(this.center_, this.radius_);
+        let box_displace = this.box_edges_.collideWithEdges(this.center_, this.radius_);
 
-        if (!Vec2.isZero(displace)) {
-            this.center_.copy(Vec2.add(this.center_, displace));
+        let total_displace = Vec2.add(world_displace, box_displace);
+
+        if (!Vec2.isZero(total_displace)) {
+            this.center_.copy(Vec2.add(this.center_, total_displace));
             this.bomb_mesh_.x = this.center_.x;
             this.bomb_mesh_.y = this.center_.y;
             this.was_released_ = true;

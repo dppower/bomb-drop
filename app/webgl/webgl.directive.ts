@@ -8,7 +8,7 @@ import { InputManager } from "../canvas/input-manager";
 import { RenderLoop } from "../canvas/render-loop";
 import { BoxEdges } from "../physics/box-edges";
 import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
-import { BOX_DIMENSIONS } from "../physics/constants";
+import { BOX_DIMENSIONS, WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 import { SHADER_PROVIDERS, BASIC_SHADER, BOMB_SHADER } from "../shaders/shader-providers";
 import { MESH_PROVIDERS, BOXES, BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
 
@@ -78,7 +78,7 @@ export class WebglDirective {
                     useClass: BombSpawner,
                     deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager, BoxEdges]
                 },
-                { provide: BoxEdges, useClass: BoxEdges, deps: [BOX_DIMENSIONS] },
+                { provide: BoxEdges, useClass: BoxEdges, deps: [BOX_DIMENSIONS, WORLD_WIDTH, WORLD_HEIGHT] },
                 ...SHADER_PROVIDERS,
                 ...MESH_PROVIDERS
             ];
