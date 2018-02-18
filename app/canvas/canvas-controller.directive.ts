@@ -31,7 +31,6 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     readonly touch_events = new Subject<{ type: TouchEventTypes, touches: { [identifier: number]: Vec2_T } }>();
     readonly resize_events = new Subject<{ width: number, height: number }>();
     private resize_sub_: Subscription;
-    //should_display_menu = false;
 
     constructor(private input_manager_: InputManager, private canvas_ref_: ElementRef) { };
 
@@ -76,10 +75,10 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     @HostListener("mouseup", ["$event"])
     setMouseUp(event: MouseEvent) {
         event.stopPropagation();
-        if (event.button == 0) {
+        if (event.button === 0) {
             this.input_manager_.setMouseButton("left", false);
         }
-        else if (event.button == 2) {
+        else if (event.button === 2) {
             this.input_manager_.setMouseButton("right", false);
         } 
     };
@@ -87,26 +86,12 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     @HostListener("mousedown", ["$event"])
     setMouseDown(event: MouseEvent) {
         event.stopPropagation();
-        if (event.button == 0) {
+        if (event.button === 0) {
             this.input_manager_.setMouseButton("left", true);
         }
-        else if (event.button == 2) {
+        else if (event.button === 2) {
             this.input_manager_.setMouseButton("right", true);
         }
-    };
-
-    @HostListener("keydown", ["$event"])
-    onKeyDown(event: KeyboardEvent) {
-        let code = event.code || event.key;
-        this.input_manager_.setKeyDown(code);
-        return false;
-    };
-
-    @HostListener("keyup", ["$event"])
-    onKeyUp(event: KeyboardEvent) {
-        let code = event.code || event.key;
-        this.input_manager_.setKeyUp(code);
-        return false;
     };
 
     @HostListener("mousemove", ["$event"])

@@ -1,5 +1,6 @@
 ﻿import { Mesh } from "../geometry/mesh";
 import { ShaderProgram } from "../shaders/shader-program";
+import { InputManager } from "../canvas/input-manager";
 import { Vec2, Vec2_T } from "../maths/vec2";
 
 export class Bomb {
@@ -9,6 +10,9 @@ export class Bomb {
     };
 
     private is_destroyed_ = false;
+
+    private apply_gravity_ = false;
+    private gravity = -9.8;
 
     private time_remaining_: number;
     private arc_length_: number;
@@ -23,12 +27,15 @@ export class Bomb {
         this.bomb_mesh_.initTransform(this.position_.x, this.position_.y, 1, 3, 3, 0);
     };
 
-    update(dt: number) {
+    update(dt: number, inputs: InputManager) {
         this.time_remaining_ -= dt;
         if (this.time_remaining_ < 0) {
             this.is_destroyed_ = true;
         }
-        
+
+        if (inputs.isButtonPressed("right")) {
+            console.log(`position: { x: ${inputs.position.x}, y: ${inputs.position.y} }.`);
+        };
         return this.is_destroyed_;
     };
 

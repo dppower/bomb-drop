@@ -75,7 +75,7 @@ export class SceneRenderer {
         this.render_loop_.swap_interval.next(this.time_to_next_swap);
 
         this.bomb_spawner_.updateSpawner(dt);
-        this.bomb_spawner_.updateBombs(dt);
+
         this.main_camera_.updateViewDimensions();
     };
 

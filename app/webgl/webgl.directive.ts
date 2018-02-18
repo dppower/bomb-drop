@@ -74,7 +74,7 @@ export class WebglDirective {
                 {
                     provide: BombSpawner,
                     useClass: BombSpawner,
-                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS]
+                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager]
                 },
                 ...SHADER_PROVIDERS,
                 ...MESH_PROVIDERS

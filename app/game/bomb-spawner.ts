@@ -6,6 +6,7 @@ import { Mesh } from "../geometry/mesh";
 import { ShaderProgram} from "../shaders/shader-program";
 import { Bomb } from "./bomb";
 import { Camera2d } from "../canvas/camera-2d";
+import { InputManager } from "../canvas/input-manager";
 
 @Injectable()
 export class BombSpawner {
@@ -24,7 +25,7 @@ export class BombSpawner {
     private time_to_next_spawn_ = 2;
     private current_spawn_interval_ = 5;
     private total_time_ = 0;
-    private total_bombs_to_spawn_ = 120;
+    private total_bombs_to_spawn_ = 1;
 
     // Bomb expiry
     private expiry_range_ = 6;
@@ -34,6 +35,7 @@ export class BombSpawner {
         @Inject(BOMB_SHADER) private shader_: ShaderProgram,
         @Inject(BOMBS) private bomb_meshes_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
+        private input_manager_: InputManager
     ) { };
 
     initSpawner() {
@@ -82,10 +84,11 @@ export class BombSpawner {
                 }
             }
         }
+        this.updateBombs(dt);
     };
 
     updateBombs(dt: number) {
-        this.active_bombs_.forEach(bomb => bomb.update(dt));
+        this.active_bombs_.forEach(bomb => bomb.update(dt, this.input_manager_));
     };
 
     drawBombs(context: WebGLRenderingContext, camera: Camera2d) {

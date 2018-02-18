@@ -12,6 +12,17 @@ export class Mesh {
         return this.color_id_;
     };
 
+    set x(value: number) {
+        this.transform_matrix_[12] = value;
+    };
+
+    set y(value: number) {
+        this.transform_matrix_[13] = value;
+    };
+
+    set scale(value: number) {
+    };
+
     private color_id_: number;
     private uniform_colour_ = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
