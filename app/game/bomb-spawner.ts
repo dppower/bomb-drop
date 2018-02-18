@@ -32,6 +32,8 @@ export class BombSpawner {
     private expiry_range_ = 6;
     private min_expiry_ = 5;
 
+    private selected_bomb_: number;
+
     constructor(
         @Inject(BOMB_SHADER) private shader_: ShaderProgram,
         @Inject(BOMBS) private bomb_meshes_: Mesh[],
@@ -90,7 +92,22 @@ export class BombSpawner {
     };
 
     updateBombs(dt: number) {
-        this.active_bombs_.forEach(bomb => bomb.update(dt, this.input_manager_));
+        if (this.input_manager_.isButtonPressed("left")) {
+            this.active_bombs_.forEach((bomb, index) => {
+                let is_selected = bomb.isPointInBomb(this.input_manager_.position);
+                if (is_selected) {
+                    this.selected_bomb_ = index;
+                }
+            })
+        }
+        if (this.input_manager_.wasButtonReleased("left")) {
+            this.selected_bomb_ = null;
+        }
+
+        this.active_bombs_.forEach((bomb, index) => {
+            let is_selected = this.selected_bomb_ === index;
+            bomb.update(dt, this.input_manager_, is_selected);
+        });
     };
 
     drawBombs(context: WebGLRenderingContext, camera: Camera2d) {
