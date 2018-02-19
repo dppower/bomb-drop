@@ -60,12 +60,12 @@ export class Bomb {
         // Apply movement
         if (is_selected) {
             this.is_awake_ = true;
-            let velocity = Vec2.scale(inputs.delta, dt * 60);
+            let velocity = Vec2.scale(Vec2.normalise(inputs.delta), dt * 25);
             Vec2.add(this.center_, velocity, this.center_);
         }
         else if (touch_delta) {
             this.is_awake_ = true;
-            let velocity = Vec2.scale(touch_delta, dt * 60);
+            let velocity = Vec2.scale(Vec2.normalise(touch_delta), dt * 25);
             Vec2.add(this.center_, velocity, this.center_);
         }
 
