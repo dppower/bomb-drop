@@ -29,6 +29,8 @@ export class Mesh {
     };
 
     set scale(value: number) {
+        this.transform_matrix_[0] = value;
+        this.transform_matrix_[5] = value;
     };
 
     private color_id_: number;

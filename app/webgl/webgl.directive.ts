@@ -74,7 +74,8 @@ export class WebglDirective {
                     useClass: SceneRenderer,
                     deps: [
                         WEBGL, BASIC_SHADER, BOXES, SKY, RGB_COLORS, BOX_DIMENSIONS,
-                        WORLD_WIDTH, WORLD_HEIGHT, RenderLoop, Camera2d, BombSpawner
+                        WORLD_WIDTH, WORLD_HEIGHT, RenderLoop, Camera2d, BombSpawner,
+                        ScoreTracker
                     ]
                 },
                 {

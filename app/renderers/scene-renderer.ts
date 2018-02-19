@@ -1,5 +1,8 @@
 import { Injectable, Inject } from "@angular/core";
 
+import { Subscription } from "rxjs/Subscription";
+import { filter } from "rxjs/operators";
+
 import { Mesh } from "../geometry/mesh";
 import { BOXES, SKY, RGB_COLORS } from "../geometry/mesh-providers";
 import { BOX_DIMENSIONS, WORLD_HEIGHT, WORLD_WIDTH, BoxDimensions } from "../physics/constants";
@@ -9,6 +12,7 @@ import { WEBGL } from "../webgl/webgl-tokens";
 import { Camera2d } from "../canvas/camera-2d";
 import { RenderLoop } from "../canvas/render-loop";
 import { BombSpawner } from "../game/bomb-spawner";
+import { ScoreTracker } from "../game/score-tracker";
 
 @Injectable()
 export class SceneRenderer {
@@ -18,6 +22,12 @@ export class SceneRenderer {
 
     private time_to_next_swap = 40;
     private swap_interval_ = 40;
+
+    private blast_duration_ = 0.5;
+    private blast_time_remaining_ = [0, 0, 0];
+    private blast_scale_ = 0.05;
+
+    private score_sub_: Subscription;
 
     constructor(
         @Inject(WEBGL) private gl: WebGLRenderingContext,
@@ -30,7 +40,8 @@ export class SceneRenderer {
         @Inject(WORLD_HEIGHT) private world_height_: number,
         private render_loop_: RenderLoop,
         private main_camera_: Camera2d,
-        private bomb_spawner_: BombSpawner
+        private bomb_spawner_: BombSpawner,
+        private score_tracker_: ScoreTracker
     ) {
         this.setPermutations();
     };
@@ -73,9 +84,15 @@ export class SceneRenderer {
             let half = dims.length / 2;
             box.initTransform(dims.x, dims.y, 1, half, half, 0);
         });
-    };
 
-    
+        this.score_sub_ = this.score_tracker_.scores
+            .pipe(
+                filter(change => change.box > -1 && change.score === 1)
+            )
+            .subscribe(change => {
+                this.blast_time_remaining_[change.box] = this.blast_duration_;
+            });
+    };
 
     updateScene(dt: number) {
         this.time_to_next_swap -= dt;
@@ -86,9 +103,28 @@ export class SceneRenderer {
 
         this.render_loop_.swap_interval.next(this.time_to_next_swap);
 
+        // Update blast times
+        this.blast_time_remaining_ = this.blast_time_remaining_.map(time => {
+            let new_time = time - dt;
+            return new_time < 0 ? 0 : new_time;
+        });
+        this.updateBoxes();
+
+        // Update bombs
         this.bomb_spawner_.updateSpawner(dt);
         this.bomb_spawner_.updateBombs(dt, this.permutations[this.current_permutation]);
+
+        // Update camera
         this.main_camera_.updateViewDimensions();
+    };
+
+    updateBoxes() {
+        this.boxes_.forEach((box, index) => {
+            let alpha = this.blast_scale_ * this.blast_time_remaining_[index] / this.blast_duration_;
+            let h = this.box_dimensions_[index].length / 2;
+            box.scale = h * (1 + alpha);
+            box.y = h * (1 + alpha);
+        });
     };
 
     permutateColors() {
@@ -120,5 +156,9 @@ export class SceneRenderer {
         this.sky_.drawMesh(this.shader_);
         // Draw bombs
         this.bomb_spawner_.drawBombs(this.gl, this.main_camera_);
+    };
+
+    dispose() {
+        this.score_sub_.unsubscribe();
     };
 }
