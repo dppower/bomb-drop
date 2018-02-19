@@ -1,5 +1,5 @@
 {
-    "name": "webgl1-gltf",
+    "name": "bomb-drop",
     "version": "1.0.0",
     "scripts": {
         "rollup-app": "node ./rollup.js app ./entry.js",

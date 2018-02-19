@@ -13,9 +13,7 @@
         "outDir": "./build-aot"
     },
   "files": [
-      "./app/main.ts",
-      "./app/gltf.d.ts",
-      "./app/webgl2.d.ts"
+      "./app/main.ts"
   ],
   "angularCompilerOptions": {
    "skipMetadataEmit": true
