@@ -6,7 +6,7 @@
         "ngc": "./node_modules/.bin/ngc -p ./ngc-config.json",
         "aot": "npm run ngc && npm run rollup-app",
         "tsc": "./node_modules/.bin/tsc -p ./app",
-        "start": "npm run tsc && node server.js"
+        "start": "npm run tsc && node ./server.js"
     },
     "license": "ISC",
     "dependencies": {
