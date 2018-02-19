@@ -8,10 +8,13 @@ import { Primitive } from "./primitive";
 import { square_mesh_data } from "./square-mesh";
 import { circle_mesh_data } from "./circle-mesh";
 
-// Platforms
+// Boxes
 export const BOXES = new InjectionToken<Mesh[]>("box meshes");
 const SQUARE_BUFFER = new InjectionToken<Primitive[]>("square primitive");
 const SQUARE_MESH = new InjectionToken<MeshData>("square mesh data");
+
+// Sky
+export const SKY = new InjectionToken<Mesh>("sky mesh");
 
 // Bombs 
 export const BOMBS = new InjectionToken<Mesh[]>("bomb meshes");
@@ -51,6 +54,7 @@ export const MESH_PROVIDERS: StaticProvider[] = [
     { provide: BOXES, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
     { provide: BOXES, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
     { provide: BOXES, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
+    { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d] },
     { provide: CIRCLE_MESH, useValue: circle_mesh_data },
     {
         provide: CIRCLE_BUFFER,

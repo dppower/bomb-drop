@@ -1,8 +1,8 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { BOXES, RGB_COLORS } from "../geometry/mesh-providers";
-import { BOX_DIMENSIONS, BoxDimensions } from "../physics/constants";
+import { BOXES, SKY, RGB_COLORS } from "../geometry/mesh-providers";
+import { BOX_DIMENSIONS, WORLD_HEIGHT, WORLD_WIDTH, BoxDimensions } from "../physics/constants";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -23,8 +23,11 @@ export class SceneRenderer {
         @Inject(WEBGL) private gl: WebGLRenderingContext,
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(BOXES) private boxes_: Mesh[],
+        @Inject(SKY) private sky_: Mesh,
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(BOX_DIMENSIONS) private box_dimensions_: BoxDimensions[],
+        @Inject(WORLD_WIDTH) private world_width_: number,
+        @Inject(WORLD_HEIGHT) private world_height_: number,
         private render_loop_: RenderLoop,
         private main_camera_: Camera2d,
         private bomb_spawner_: BombSpawner
@@ -54,6 +57,13 @@ export class SceneRenderer {
         this.shader_.initProgram();
         this.bomb_spawner_.initSpawner();
 
+        // Sky
+        this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0], 3);
+        let hw = this.world_width_ / 2;
+        let hh = this.world_height_ / 2;
+        this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
+
+        // Boxes
         let color_indices = this.permutations[this.current_permutation];
         this.boxes_.forEach((box, index) => {
             let color_index = color_indices[index];
@@ -105,8 +115,10 @@ export class SceneRenderer {
         this.gl.uniformMatrix4fv(
             this.shader_.getUniform("u_projection_matrix"), false, this.main_camera_.projection
         );
+        // Draw Static
         this.boxes_.forEach(box => box.drawMesh(this.shader_));
-
+        this.sky_.drawMesh(this.shader_);
+        // Draw bombs
         this.bomb_spawner_.drawBombs(this.gl, this.main_camera_);
     };
 }

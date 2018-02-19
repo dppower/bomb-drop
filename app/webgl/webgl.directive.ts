@@ -10,7 +10,7 @@ import { BoxEdges } from "../physics/box-edges";
 import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
 import { BOX_DIMENSIONS, WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 import { SHADER_PROVIDERS, BASIC_SHADER, BOMB_SHADER } from "../shaders/shader-providers";
-import { MESH_PROVIDERS, BOXES, BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
+import { MESH_PROVIDERS, SKY, BOXES, BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
 
 @Directive({
     selector: "[webgl]"
@@ -71,7 +71,10 @@ export class WebglDirective {
                 {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
-                    deps: [WEBGL, BASIC_SHADER, BOXES, RGB_COLORS, BOX_DIMENSIONS, RenderLoop, Camera2d, BombSpawner]
+                    deps: [
+                        WEBGL, BASIC_SHADER, BOXES, SKY, RGB_COLORS, BOX_DIMENSIONS,
+                        WORLD_WIDTH, WORLD_HEIGHT, RenderLoop, Camera2d, BombSpawner
+                    ]
                 },
                 {
                     provide: BombSpawner,
