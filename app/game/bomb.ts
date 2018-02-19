@@ -56,14 +56,20 @@ export class Bomb {
             this.is_destroyed_ = true;
             return true;
         }
-        
+
+        // Apply movement
         if (is_selected) {
             this.is_awake_ = true;
-            this.center_.copy(inputs.position);
-            this.bomb_mesh_.x = this.center_.x;
-            this.bomb_mesh_.y = this.center_.y;
+            let velocity = Vec2.scale(inputs.delta, dt * 60);
+            Vec2.add(this.center_, velocity, this.center_);            
         }
 
+        // Apply gravity
+        if (!is_selected && this.is_awake_) {
+            this.center_.y += this.gravity * dt;
+        }
+
+        // Handle contacts
         let world_displace = this.box_edges_.collideWithWorldEdges(this.center_, this.radius_);
         let box_displace = this.box_edges_.collideWithEdges(this.center_, this.radius_);
 
@@ -71,14 +77,11 @@ export class Bomb {
 
         if (!Vec2.isZero(total_displace)) {
             this.center_.copy(Vec2.add(this.center_, total_displace));
-            this.bomb_mesh_.x = this.center_.x;
-            this.bomb_mesh_.y = this.center_.y;
         }
-        
-        if (this.is_awake_) {
-            this.center_.y += this.gravity * dt;
-            this.bomb_mesh_.y = this.center_.y;
-        }
+
+        // Update mesh position
+        this.bomb_mesh_.x = this.center_.x;
+        this.bomb_mesh_.y = this.center_.y;
 
         if (this.center_.y < this.radius_) {
             this.is_destroyed_ = true;
