@@ -45,6 +45,9 @@
     <TypeScriptCompile Include="canvas\input-manager.ts" />
     <TypeScriptCompile Include="canvas\main-canvas.component.ts" />
     <TypeScriptCompile Include="canvas\render-loop.ts" />
+    <TypeScriptCompile Include="canvas\score-display.component.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="canvas\swap-timer.component.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -53,6 +56,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="game\bomb.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="game\score-tracker.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\circle-mesh.ts">

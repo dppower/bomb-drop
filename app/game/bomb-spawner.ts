@@ -8,6 +8,7 @@ import { Bomb } from "./bomb";
 import { Camera2d } from "../canvas/camera-2d";
 import { InputManager } from "../canvas/input-manager";
 import { BoxEdges } from "../physics/box-edges";
+import { ScoreTracker } from "../game/score-tracker";
 
 @Injectable()
 export class BombSpawner {
@@ -39,7 +40,8 @@ export class BombSpawner {
         @Inject(BOMBS) private bomb_meshes_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         private input_manager_: InputManager,
-        private box_edges_: BoxEdges
+        private box_edges_: BoxEdges,
+        private score_tracker_: ScoreTracker
     ) { };
 
     initSpawner() {
@@ -107,9 +109,14 @@ export class BombSpawner {
 
         this.active_bombs_.forEach((bomb, index) => {
             let is_selected = this.selected_bomb_ === index;
-            let was_destroyed = bomb.update(dt, this.input_manager_, is_selected);
-            if (is_selected && was_destroyed) {
-                this.selected_bomb_ = null;
+            if (!bomb.is_destroyed) {
+                let was_destroyed = bomb.update(dt, this.input_manager_, is_selected);
+                if (was_destroyed) {
+                    this.score_tracker_.addScore(-1, -1)
+                }
+                if (is_selected && was_destroyed) {
+                    this.selected_bomb_ = null;
+                }
             }
         });
 
@@ -119,10 +126,10 @@ export class BombSpawner {
             if (box_index !== undefined) {
                 bomb.setDestroyed();
                 if (bomb.color_id === current_permutation[box_index]) {
-                    console.log("the color of bomb and box match");
+                    this.score_tracker_.addScore(box_index, 1);
                 }
                 else {
-                    console.log("the color of bomb and box DO NOT match");
+                    this.score_tracker_.addScore(box_index, -1);
                 }
             }
         });

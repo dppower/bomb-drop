@@ -11,6 +11,7 @@ import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
 import { BOX_DIMENSIONS, WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 import { SHADER_PROVIDERS, BASIC_SHADER, BOMB_SHADER } from "../shaders/shader-providers";
 import { MESH_PROVIDERS, SKY, BOXES, BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
+import { ScoreTracker } from "../game/score-tracker";
 
 @Directive({
     selector: "[webgl]"
@@ -79,7 +80,7 @@ export class WebglDirective {
                 {
                     provide: BombSpawner,
                     useClass: BombSpawner,
-                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager, BoxEdges]
+                    deps: [BOMB_SHADER, BOMBS, RGB_COLORS, InputManager, BoxEdges, ScoreTracker]
                 },
                 { provide: BoxEdges, useClass: BoxEdges, deps: [BOX_DIMENSIONS, WORLD_WIDTH, WORLD_HEIGHT] },
                 ...SHADER_PROVIDERS,

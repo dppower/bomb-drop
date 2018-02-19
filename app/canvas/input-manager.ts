@@ -26,6 +26,10 @@ export class InputManager {
         return this.current_aspect_ratio_;
     };
 
+    get world_aspect() {
+        return this.world_aspect_;
+    };
+
     set aspect(value: number) {
         this.current_aspect_ratio_ = value;
     };
