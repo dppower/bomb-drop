@@ -152,8 +152,19 @@ export class SceneRenderer {
             this.shader_.getUniform("u_projection_matrix"), false, this.main_camera_.projection
         );
         // Draw Static
-        this.boxes_.forEach(box => box.drawMesh(this.shader_));
+        this.gl.uniform1f(
+            this.shader_.getUniform("u_color_factor"), 1.0
+        );
         this.sky_.drawMesh(this.shader_);
+
+        this.boxes_.forEach((box, index) => {
+            let alpha = 1 - 0.4 * this.blast_time_remaining_[index] / this.blast_duration_;
+            this.gl.uniform1f(
+                this.shader_.getUniform("u_color_factor"), alpha
+            );
+            box.drawMesh(this.shader_)
+        });
+        
         // Draw bombs
         this.bomb_spawner_.drawBombs(this.gl, this.main_camera_);
     };

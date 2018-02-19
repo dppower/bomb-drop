@@ -32,13 +32,14 @@ export const SHADER_PROVIDERS: StaticProvider[] = [
     {
         provide: BASIC_FRAGMENT_SHADER, useValue: {
             attributes: [],
-            uniforms: ["u_base_color"],
+            uniforms: ["u_base_color", "u_color_factor"],
             source: `
             #version 100
             precision mediump float;
             uniform vec4 u_base_color;
+            uniform float u_color_factor;
             void main(void) {
-            gl_FragColor = u_base_color;
+            gl_FragColor = vec4(u_color_factor * u_base_color.rgb, u_base_color.a);
             }`
         }
     },
