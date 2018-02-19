@@ -6,7 +6,7 @@ import {
 import { distinctUntilChanged, debounceTime, tap } from "rxjs/operators";
 import { Subject } from "rxjs/Subject";
 import { Subscription } from "rxjs/Subscription";
-import { TouchEventTypes, MultiTouch, SingleTouch, splitMultipleTouches } from "./touch-utility";
+import { TouchEventTypes, MultiTouch } from "./touch-utility";
 import { Vec2_T } from "../maths/vec2";
 import { InputManager } from "./input-manager";
 
@@ -27,8 +27,7 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
         let height = (<HTMLCanvasElement>this.canvas_ref_.nativeElement).clientHeight;
         return height > 1080 ? 1080 : height;
     };
-
-    readonly touch_events = new Subject<{ type: TouchEventTypes, touches: { [identifier: number]: Vec2_T } }>();
+    
     readonly resize_events = new Subject<{ width: number, height: number }>();
     private resize_sub_: Subscription;
 
@@ -106,23 +105,24 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     // Touch Events
     @HostListener("touchstart", ["$event"])
     setTouchStart(event: TouchEvent) {
-        this.touch_events.next(this.parseTouchEvent(event));
+        console.log("touch start");
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
     };
 
     @HostListener("touchend", ["$event"])
     setTouchEnd(event: TouchEvent) {
-        this.touch_events.next(this.parseTouchEvent(event));
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
     };
 
     @HostListener("touchmove", ["$event"])
     setTouchMove(event: TouchEvent) {
         event.preventDefault();
-        this.touch_events.next(this.parseTouchEvent(event));
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
     };
 
     @HostListener("touchcancel", ["$event"])
     setTouchCancel(event: TouchEvent) {
-        this.touch_events.next(this.parseTouchEvent(event));
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
     };
 
     parseTouchEvent(event: TouchEvent): MultiTouch {
@@ -130,7 +130,9 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
         for (let index in event.changedTouches) {
             if (Number.isNaN(+index)) continue;
             let touch = event.changedTouches.item(+index);
-            let point = { x: touch.clientX, y: touch.clientY };
+            let x = touch.clientX / this.client_width;
+            let y = 1 - (touch.clientY / this.client_height);           
+            let point = this.input_manager_.canvasCoordsToWorldPosition({ x, y });
             touches[touch.identifier] = point;
         }
         return { type: (<TouchEventTypes>event.type), touches };

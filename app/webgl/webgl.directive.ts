@@ -154,6 +154,7 @@ export class WebglDirective {
         this.render_loop_.stop();
         this.update_sub_ && this.update_sub_.unsubscribe();
         this.render_sub_ && this.render_sub_.unsubscribe();
+        this.scene_renderer_.dispose();
     };
 }
 

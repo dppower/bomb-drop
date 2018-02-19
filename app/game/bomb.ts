@@ -50,7 +50,7 @@ export class Bomb {
         this.bomb_mesh_.initTransform(this.center_.x, this.center_.y, 1, this.radius_, this.radius_, 0);
     };
 
-    update(dt: number, inputs: InputManager, is_selected: boolean) {
+    update(dt: number, inputs: InputManager, is_selected: boolean, touch_delta: Vec2_T) {
         this.time_remaining_ -= dt;
         if (this.time_remaining_ < 0) {
             this.is_destroyed_ = true;
@@ -61,8 +61,14 @@ export class Bomb {
         if (is_selected) {
             this.is_awake_ = true;
             let velocity = Vec2.scale(inputs.delta, dt * 60);
-            Vec2.add(this.center_, velocity, this.center_);            
+            Vec2.add(this.center_, velocity, this.center_);
         }
+        else if (touch_delta) {
+            this.is_awake_ = true;
+            let velocity = Vec2.scale(touch_delta, dt * 60);
+            Vec2.add(this.center_, velocity, this.center_);
+        }
+
 
         // Apply gravity
         if (!is_selected && this.is_awake_) {

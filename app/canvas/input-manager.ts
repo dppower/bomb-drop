@@ -1,5 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
+import { Subject } from "rxjs/Subject";
+import { TouchEventTypes, MultiTouch } from "./touch-utility";
 import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 import { Vec2, Vec2_T } from "../maths/vec2";
 
@@ -45,7 +47,9 @@ export class InputManager {
     get wheel() {
         return this.current_pointer_state_.wheel;
     };
-    
+
+    readonly touch_events = new Subject<MultiTouch>();
+
     private previous_pointer_state_: PointerState;
     private current_pointer_state_: PointerState;
 

@@ -12,7 +12,7 @@ export interface BoxDimensions {
 export const BOX_DIMENSIONS = new InjectionToken<BoxDimensions[]>("box dimensions");
 
 export const WORLD_CONSTANTS: StaticProvider[] = [
-    { provide: WORLD_HEIGHT, useValue: 60 },
+    { provide: WORLD_HEIGHT, useValue: 50 },
     { provide: WORLD_WIDTH, useValue: 40 },
     {
         provide: BOX_DIMENSIONS,

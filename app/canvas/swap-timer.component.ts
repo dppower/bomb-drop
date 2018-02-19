@@ -26,17 +26,17 @@ import { map, distinctUntilChanged } from "rxjs/operators";
     }
     p#time {
         font-size: 52px;
-        width: 78px;
-        height: 78px;
+        width: 72px;
+        height: 52px;
         text-align: center;
-        line-height: 78px;
+        line-height: 52px;
     }
     p#time-label{
         font-size: 20px;
         width: 180px;
-        height: 78px;
+        height: 52px;
         text-align: center;
-        line-height: 78px;
+        line-height: 52px;
     }
     `]
 })

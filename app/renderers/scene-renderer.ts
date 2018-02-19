@@ -171,5 +171,6 @@ export class SceneRenderer {
 
     dispose() {
         this.score_sub_.unsubscribe();
+        this.bomb_spawner_.dispose();
     };
 }

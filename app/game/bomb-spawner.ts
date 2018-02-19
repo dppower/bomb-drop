@@ -1,5 +1,10 @@
 ﻿import { Injectable, Inject, Injector } from "@angular/core";
 
+import { Subscription } from "rxjs/Subscription";
+import { map, filter, groupBy, mergeMap, pairwise } from "rxjs/operators";
+
+import { Vec2, Vec2_T } from "../maths/vec2";
+import { splitMultipleTouches } from "../canvas/touch-utility";
 import { BOMB_SHADER } from "../shaders/shader-providers";
 import { BOMBS, RGB_COLORS } from "../geometry/mesh-providers";
 import { Mesh } from "../geometry/mesh";
@@ -21,7 +26,7 @@ export class BombSpawner {
 
     // Slots
     private bomb_position_x = [4, 12, 20, 28, 36];
-    private bomb_position_y = 50;
+    private bomb_position_y = 44;
 
     // Spawn timer
     private time_to_next_spawn_ = 1;
@@ -35,6 +40,9 @@ export class BombSpawner {
 
     private selected_bomb_: number;
 
+    private touch_events_sub_: Subscription;
+    private current_touches_: Vec2_T[] = [];
+
     constructor(
         @Inject(BOMB_SHADER) private shader_: ShaderProgram,
         @Inject(BOMBS) private bomb_meshes_: Mesh[],
@@ -46,6 +54,37 @@ export class BombSpawner {
 
     initSpawner() {
         this.shader_.initProgram();
+
+        this.touch_events_sub_ = this.input_manager_.touch_events
+            .pipe(
+                splitMultipleTouches,
+                map(touch => {
+                    let bomb_index: number;
+                    if (touch.type === "touchmove") {
+                        this.active_bombs_.forEach((bomb, index) => {
+                            let is_selected = bomb.isPointInBomb(touch.point);
+                            if (is_selected && !bomb.is_destroyed) {
+                                bomb_index = index;
+                            }
+                        })
+                    }
+                    return Object.assign(touch, { bomb_index })
+                }),
+                filter(touch => touch.bomb_index !== undefined),
+                groupBy(touch => touch.identifier + touch.bomb_index ),
+                mergeMap(group => {
+                    return group
+                        .pipe(
+                            pairwise(),
+                            map(pair => {
+                                return { index: pair[0].bomb_index, delta: Vec2.subtract(pair[1].point, pair[0].point) };
+                            })
+                        );
+                })
+             )
+            .subscribe(touch => {
+                this.current_touches_[touch.index] = touch.delta;
+            });
     };
 
     createBomb(index: number) {
@@ -97,7 +136,7 @@ export class BombSpawner {
         if (this.input_manager_.isButtonPressed("left")) {
             this.active_bombs_.forEach((bomb, index) => {
                 let is_selected = bomb.isPointInBomb(this.input_manager_.position);
-                if (is_selected) {
+                if (is_selected && !bomb.is_destroyed) {
                     this.selected_bomb_ = index;
                 }
             })
@@ -110,7 +149,7 @@ export class BombSpawner {
         this.active_bombs_.forEach((bomb, index) => {
             let is_selected = this.selected_bomb_ === index;
             if (!bomb.is_destroyed) {
-                let was_destroyed = bomb.update(dt, this.input_manager_, is_selected);
+                let was_destroyed = bomb.update(dt, this.input_manager_, is_selected, this.current_touches_[index]);
                 if (was_destroyed) {
                     this.score_tracker_.addScore(-1, -1)
                 }
@@ -133,6 +172,8 @@ export class BombSpawner {
                 }
             }
         });
+
+        this.current_touches_.length = 0;
     };
 
     drawBombs(context: WebGLRenderingContext, camera: Camera2d) {
@@ -143,5 +184,9 @@ export class BombSpawner {
         );
 
         this.active_bombs_.forEach(bomb => bomb.draw(context, this.shader_));
+    };
+
+    dispose() {
+        this.touch_events_sub_.unsubscribe();
     };
 }
