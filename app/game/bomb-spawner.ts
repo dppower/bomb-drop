@@ -1,7 +1,7 @@
 ﻿import { Injectable, Inject, Injector } from "@angular/core";
 
 import { Subscription } from "rxjs/Subscription";
-import { map, filter, groupBy, mergeMap, pairwise } from "rxjs/operators";
+import { map, filter, groupBy, mergeMap, pairwise, last, takeWhile, take, tap } from "rxjs/operators";
 
 import { Vec2, Vec2_T } from "../maths/vec2";
 import { splitMultipleTouches } from "../canvas/touch-utility";
@@ -60,18 +60,19 @@ export class BombSpawner {
                 splitMultipleTouches,
                 map(touch => {
                     let bomb_index: number;
-                    if (touch.type === "touchmove") {
-                        this.active_bombs_.forEach((bomb, index) => {
-                            let is_selected = bomb.isPointInBomb(touch.point);
-                            if (is_selected && !bomb.is_destroyed) {
-                                bomb_index = index;
-                            }
-                        })
-                    }
+                    this.active_bombs_.forEach((bomb, index) => {
+                        let is_selected = bomb.isPointInBomb(touch.point);
+                        if (is_selected && !bomb.is_destroyed) {
+                            bomb_index = index;
+                        }
+                    });
                     return Object.assign(touch, { bomb_index })
                 }),
-                filter(touch => touch.bomb_index !== undefined),
-                groupBy(touch => touch.identifier + touch.bomb_index ),
+                groupBy(
+                    touch => touch.identifier,
+                    null,
+                    (obs) => obs.pipe(last(touch => touch.type !== "touchend" || touch.bomb_index !== undefined))
+                ),
                 mergeMap(group => {
                     return group
                         .pipe(

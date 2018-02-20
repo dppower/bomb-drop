@@ -105,7 +105,6 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     // Touch Events
     @HostListener("touchstart", ["$event"])
     setTouchStart(event: TouchEvent) {
-        console.log("touch start");
         this.input_manager_.touch_events.next(this.parseTouchEvent(event));
     };
 

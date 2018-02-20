@@ -41,6 +41,16 @@ export class ScoreDisplay implements OnInit, OnDestroy {
         }
     };
 
+    @HostBinding("style.height")
+    get style_height() {
+        if (this.input_manager_.aspect <= this.input_manager_.world_aspect) {
+            return "auto";
+        }
+        else {
+            return "100%";
+        }
+    };
+
     @HostBinding("style.flex-direction")
     get style_flex_direction() {
         if (this.input_manager_.aspect <= this.input_manager_.world_aspect) {
